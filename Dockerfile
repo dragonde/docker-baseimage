@@ -1,6 +1,8 @@
-FROM ubuntu-core-14.10-core
+FROM vivid-core-0
 
-ADD sources.list /etc/apt/sources.list
 
-RUN apt-get update && apt-get install -y ansible
+RUN apt-get update && apt-get install -y exim4 
 RUN apt-get -y clean
+RUN find /var/lib/apt/lists/ -type f -exec rm {} \;
+
+EXPOSE 25

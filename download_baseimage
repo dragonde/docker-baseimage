@@ -17,14 +17,16 @@ name=$(echo $image |  sed -re "s|^(.+)-amd64.tar.gz$|\1|" )
 
 echo Creando Imagen $name
 
-docker import $url/$image $name
+docker import $url/$image $name-0
 
-echo "FROM $name" > Dockerfile
+echo "FROM $name-0" > Dockerfile
 echo >> Dockerfile
-echo 'ADD sources.list /etc/apt/sources.list' >> Dockerfile
+#echo 'ADD sources.list /etc/apt/sources.list' >> Dockerfile
 echo >> Dockerfile
-echo "RUN apt-get update && apt-get install -y ansible" >> Dockerfile
+echo "RUN apt-get update && apt-get install -y exim4 dovecot-imapd" >> Dockerfile
 echo "RUN apt-get -y clean" >> Dockerfile
+echo "RUN rm /var/lib/apt/list/*" >> Dockerfile
+
 
 cp /etc/apt/sources.list .
 
