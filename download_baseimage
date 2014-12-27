@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if [ $# -le 0 ]
+then
+  url="http://cdimage.ubuntu.com/ubuntu-core/daily/current"
+else 
+  url="http://cdimage.ubuntu.com/ubuntu-core/releases/$1/release"
+fi
+
+image=$(curl -sSL $url | egrep -o "[.a-z0-9\-]+-amd64.tar.gz" | head -n 1)
+
+echo URL... $image
+
+name=$(echo $image |  sed -re "s|^(.+)-amd64.tar.gz$|\1|" )
+
+#curl -O -SL $url/$image
+
+echo Creando Imagen $name
+
+docker import $url/$image $name
+
+echo "FROM $name" > Dockerfile
+echo >> Dockerfile
+echo 'ADD sources.list /etc/apt/sources.list' >> Dockerfile
+echo >> Dockerfile
+echo "RUN apt-get update && apt-get install -y ansible" >> Dockerfile
+echo "RUN apt-get -y clean" >> Dockerfile
+
+cp /etc/apt/sources.list .
+
+docker build -t $name .
