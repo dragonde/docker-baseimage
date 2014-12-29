@@ -1,23 +1,23 @@
-FROM trusty-core-0
+FROM ubuntu:14.10 
+ 
 MAINTAINER Alberto Bañon, dragon@dragonde.es
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN perl -pi -e "s| restricted| restricted universe|" /etc/apt/sources.list
+#RUN perl -pi -e "s| restricted| restricted universe|" /etc/apt/sources.list
 
-RUN apt-get update && apt-get install -y locales aptitude openssh-server supervisor
+RUN apt-get update && apt-get install -y --no-install-recommends \
+   locales \
+   aptitude \
+   supervisor
 
-RUN dpkg-reconfigure locales && \
-    locale-gen es_ES.UTF-8 && \
-    /usr/sbin/update-locale LANG=es_ES.UTF-8
-
-# Set default locale for the environment
+## Configure default locale
+RUN echo "es_ES.UTF-8 UTF-8" >> /etc/locale.gen \
+&& locale-gen es_ES.utf8 \
+&& /usr/sbin/update-locale LANG=es_ES.UTF-8
 ENV LC_ALL es_ES.UTF-8
-ENV LANG es_ES.UTF-8
-ENV LANGUAGE es_ES.UTF-8
 
 RUN echo "Europe/Madrid" > /etc/timezone
 RUN dpkg-reconfigure tzdata
 
 RUN find /var/lib/apt/lists -type f -exec rm {} \;
-
