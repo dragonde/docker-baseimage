@@ -1,4 +1,4 @@
-FROM ubuntu:14.10 
+FROM ubuntu:utopic 
  
 MAINTAINER Alberto Bañon, dragon@dragonde.es
 
